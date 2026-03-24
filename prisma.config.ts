@@ -1,14 +1,4 @@
-import { defineConfig, env } from "prisma/config";
-
-// Load .env.local for local development (Vercel injects env vars directly)
-try {
-  const { config } = await import("dotenv");
-  const { expand } = await import("dotenv-expand");
-  expand(config({ path: ".env.local" }));
-  expand(config({ path: ".env" }));
-} catch {
-  // dotenv not available or files don't exist — env vars come from the host
-}
+import { defineConfig } from "prisma/config";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -17,6 +7,8 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: env("DATABASE_URL"),
+    // Use process.env directly (not Prisma's env() which throws if missing).
+    // prisma generate doesn't connect to the DB, so a fallback is safe.
+    url: process.env.DATABASE_URL ?? "postgresql://localhost/placeholder",
   },
 });
