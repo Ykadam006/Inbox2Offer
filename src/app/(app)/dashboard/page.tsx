@@ -64,10 +64,15 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const applications = await db.application.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: "desc" },
-  });
+  let applications: Awaited<ReturnType<typeof db.application.findMany>> = [];
+  try {
+    applications = await db.application.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Dashboard fetch error:", error);
+  }
 
   const displayName = session.user.name || session.user.email?.split("@")[0] || "there";
 

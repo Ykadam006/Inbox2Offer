@@ -301,7 +301,7 @@ export function DashboardClient({ initialApplications, displayName }: DashboardC
                           className="h-2 w-2 rounded-full"
                           style={{ background: item.color }}
                         />
-                        <span className="text-muted-foreground capitalize">{item.name.replace("_", " ")}</span>
+                        <span className="text-muted-foreground capitalize">{item.name.replaceAll("_", " ")}</span>
                       </div>
                       <span className="font-medium">{item.value}</span>
                     </div>

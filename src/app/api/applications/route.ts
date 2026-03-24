@@ -9,12 +9,16 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const applications = await db.application.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return NextResponse.json(applications);
+  try {
+    const applications = await db.application.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+    });
+    return NextResponse.json(applications);
+  } catch (error) {
+    console.error("Fetch applications error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {

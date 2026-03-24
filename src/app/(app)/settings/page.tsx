@@ -40,7 +40,10 @@ export default function SettingsPage() {
   useEffect(() => {
     if (!session?.user) return;
     fetch("/api/profile")
-      .then((r) => r.json())
+      .then(async (r) => {
+        if (!r.ok) throw new Error(`Profile fetch failed: ${r.status}`);
+        return r.json();
+      })
       .then((data) => {
         reset({
           name: data.name ?? session.user?.name ?? "",

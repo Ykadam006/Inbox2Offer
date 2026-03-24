@@ -35,26 +35,31 @@ export default function AnalyticsPage() {
     [applications]
   );
 
-  // Stage funnel — true cumulative pipeline (each stage = apps that reached AT LEAST that stage)
+  // Stage funnel — cumulative pipeline with all stages properly ordered
+  // Terminal stages (rejected/ghosted/withdrawn) count for "applied" only
   const funnelData = useMemo(() => {
-    const stageOrder: ApplicationStage[] = [
-      "applied",
-      "oa",
-      "recruiter_screen",
-      "interview_1",
-      "offer",
+    const FUNNEL_STAGES: ApplicationStage[] = [
+      "applied", "oa", "recruiter_screen",
+      "interview_1", "interview_2", "final_round", "offer",
     ];
-    const reached = (app: Application, stage: ApplicationStage) => {
-      const appIdx = stageOrder.indexOf(app.current_stage as ApplicationStage);
-      const targetIdx = stageOrder.indexOf(stage);
-      if (appIdx === -1) return false;
-      return appIdx >= targetIdx;
+    // Stages that mean the app progressed past "applied" but we track by current position
+    const TERMINAL: ApplicationStage[] = ["rejected", "ghosted", "withdrawn"];
+
+    const reached = (app: Application, targetStage: ApplicationStage) => {
+      const current = app.current_stage;
+      if (current === "saved") return false;
+      const targetIdx = FUNNEL_STAGES.indexOf(targetStage);
+      const currentIdx = FUNNEL_STAGES.indexOf(current);
+      // Terminal stages count for "applied" bucket only
+      if (TERMINAL.includes(current)) return targetStage === "applied";
+      return currentIdx >= targetIdx;
     };
-    return stageOrder.map((stage) => ({
+
+    return FUNNEL_STAGES.map((stage) => ({
       name: STAGE_LABELS[stage],
       value: applications.filter((a) => reached(a, stage)).length,
       fill: STAGE_COLORS[stage],
-    }));
+    })).filter((d) => d.value > 0);
   }, [applications]);
 
   // Weekly applications over last 8 weeks

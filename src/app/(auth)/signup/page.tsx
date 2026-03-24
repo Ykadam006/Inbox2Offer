@@ -60,6 +60,7 @@ export default function SignupPage() {
 
     if (result?.error) {
       toast.error("Account created — please sign in");
+      setIsLoading(false);
       router.push("/login");
       return;
     }

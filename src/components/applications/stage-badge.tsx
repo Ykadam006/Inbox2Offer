@@ -3,7 +3,7 @@ import type { ApplicationStage } from "@/types";
 import { STAGE_LABELS } from "@/types";
 
 interface StageBadgeProps {
-  stage: ApplicationStage;
+  stage: string;
   className?: string;
 }
 
@@ -21,16 +21,21 @@ const stageStyles: Record<ApplicationStage, string> = {
   withdrawn: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
 };
 
+const FALLBACK_STYLE = "bg-muted text-muted-foreground";
+
 export function StageBadge({ stage, className }: StageBadgeProps) {
+  const style = stageStyles[stage as ApplicationStage] ?? FALLBACK_STYLE;
+  const label = STAGE_LABELS[stage as ApplicationStage] ?? stage.replace(/_/g, " ");
+
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
-        stageStyles[stage],
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize",
+        style,
         className
       )}
     >
-      {STAGE_LABELS[stage]}
+      {label}
     </span>
   );
 }

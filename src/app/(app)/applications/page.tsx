@@ -35,7 +35,6 @@ import type { Application, ApplicationStage } from "@/types";
 import { STAGE_LABELS, SOURCE_LABELS } from "@/types";
 import { formatDate, getSalaryDisplay } from "@/lib/utils";
 import type { ApplicationFormData } from "@/lib/validations/application";
-import { toast } from "sonner";
 
 type SortKey = "company_name" | "role_title" | "applied_date" | "current_stage" | "created_at";
 type SortDir = "asc" | "desc";
@@ -106,17 +105,17 @@ export default function ApplicationsPage() {
 
   async function handleAdd(data: ApplicationFormData) {
     setIsFormLoading(true);
-    await createApplication(data as Omit<Application, "id" | "user_id" | "created_at" | "updated_at">);
+    const result = await createApplication(data as Omit<Application, "id" | "user_id" | "created_at" | "updated_at">);
     setIsFormLoading(false);
-    setIsAddOpen(false);
+    if (result) setIsAddOpen(false);
   }
 
   async function handleEdit(data: ApplicationFormData) {
     if (!editApp) return;
     setIsFormLoading(true);
-    await updateApplication(editApp.id, data as Partial<Application>);
+    const result = await updateApplication(editApp.id, data as Partial<Application>);
     setIsFormLoading(false);
-    setEditApp(null);
+    if (result) setEditApp(null);
   }
 
   async function handleDelete(id: string) {

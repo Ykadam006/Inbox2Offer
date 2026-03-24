@@ -35,21 +35,26 @@ export default function LoginPage() {
 
   async function onSubmit(data: LoginForm) {
     setIsLoading(true);
-    const result = await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      toast.error("Invalid email or password");
+      if (result?.error) {
+        toast.error("Invalid email or password");
+        return;
+      }
+
+      toast.success("Welcome back!");
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    toast.success("Welcome back!");
-    router.push("/dashboard");
-    router.refresh();
   }
 
   return (
