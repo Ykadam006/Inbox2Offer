@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Color palette: #143601 → #aad576 forest green ─── */
+
+@layer base {
+  :root {
+    /* Light mode — crisp white base, rich olive primary */
+    --background: 120 33% 99%;
+    --foreground: 100 96% 11%;      /* #143601 darkest green */
+    --card: 0 0% 100%;
+    --card-foreground: 100 96% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 100 96% 11%;
+    --primary: 91 61% 34%;          /* #538d22 olive green */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 95 51% 92%;        /* very light lime */
+    --secondary-foreground: 100 96% 11%;
+    --muted: 96 30% 94%;
+    --muted-foreground: 94 44% 35%;  /* #73a942 medium tone */
+    --accent: 95 51% 65%;           /* #aad576 light lime */
+    --accent-foreground: 100 96% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 96 30% 88%;
+    --input: 96 30% 88%;
+    --ring: 91 61% 34%;
+    --radius: 0.75rem;
+    --chart-1: 91 61% 34%;   /* #538d22 */
+    --chart-2: 94 44% 46%;   /* #73a942 */
+    --chart-3: 95 51% 65%;   /* #aad576 */
+    --chart-4: 43 96% 56%;
+    --chart-5: 0 84% 60%;
+  }
+
+  .dark {
+    /* Dark mode — deep forest night */
+    --background: 100 96% 7%;       /* near #0f2200 */
+    --foreground: 95 51% 88%;       /* light lime text */
+    --card: 100 96% 11%;            /* #143601 */
+    --card-foreground: 95 51% 88%;
+    --popover: 100 97% 13%;         /* #1a4301 */
+    --popover-foreground: 95 51% 88%;
+    --primary: 94 44% 46%;          /* #73a942 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 99 97% 17%;        /* #245501 */
+    --secondary-foreground: 95 51% 88%;
+    --muted: 100 97% 13%;           /* #1a4301 */
+    --muted-foreground: 95 40% 65%;
+    --accent: 95 51% 65%;           /* #aad576 */
+    --accent-foreground: 100 96% 11%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 99 97% 20%;
+    --input: 99 97% 20%;
+    --ring: 94 44% 46%;
+    --chart-1: 94 44% 46%;
+    --chart-2: 95 51% 65%;
+    --chart-3: 91 61% 34%;
+    --chart-4: 43 96% 56%;
+    --chart-5: 0 84% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Gradient text using brand palette */
+  .text-gradient {
+    @apply bg-gradient-to-r from-forest-600 to-forest-500 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-dark {
+    @apply bg-gradient-to-r from-forest-500 to-forest-400 bg-clip-text text-transparent;
+  }
+}
