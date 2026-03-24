@@ -5,6 +5,7 @@ import { useApplications } from "@/hooks/use-applications";
 import { computeAnalytics, computeSourcePerformance } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { STAGE_LABELS, STAGE_COLORS, SOURCE_LABELS } from "@/types";
+import type { Application, ApplicationStage } from "@/types";
 import {
   BarChart,
   Bar,
@@ -34,17 +35,25 @@ export default function AnalyticsPage() {
     [applications]
   );
 
-  // Stage funnel data
+  // Stage funnel — true cumulative pipeline (each stage = apps that reached AT LEAST that stage)
   const funnelData = useMemo(() => {
-    const stages = ["applied", "oa", "recruiter_screen", "interview_1", "offer"];
-    return stages.map((stage) => ({
-      name: STAGE_LABELS[stage as keyof typeof STAGE_LABELS],
-      value: applications.filter(
-        (a) =>
-          a.current_stage === stage ||
-          (stage === "applied" && a.current_stage !== "saved")
-      ).length,
-      fill: STAGE_COLORS[stage as keyof typeof STAGE_COLORS],
+    const stageOrder: ApplicationStage[] = [
+      "applied",
+      "oa",
+      "recruiter_screen",
+      "interview_1",
+      "offer",
+    ];
+    const reached = (app: Application, stage: ApplicationStage) => {
+      const appIdx = stageOrder.indexOf(app.current_stage as ApplicationStage);
+      const targetIdx = stageOrder.indexOf(stage);
+      if (appIdx === -1) return false;
+      return appIdx >= targetIdx;
+    };
+    return stageOrder.map((stage) => ({
+      name: STAGE_LABELS[stage],
+      value: applications.filter((a) => reached(a, stage)).length,
+      fill: STAGE_COLORS[stage],
     }));
   }, [applications]);
 
@@ -192,6 +201,38 @@ export default function AnalyticsPage() {
           </Card>
         ))}
       </div>
+
+      {/* Pipeline Funnel */}
+      {funnelData.some((d) => d.value > 0) && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Application Pipeline Funnel</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={220}>
+              <FunnelChart>
+                <Tooltip
+                  contentStyle={{
+                    background: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                  }}
+                />
+                <Funnel dataKey="value" data={funnelData} isAnimationActive>
+                  <LabelList
+                    position="right"
+                    fill="hsl(var(--foreground))"
+                    stroke="none"
+                    dataKey="name"
+                    style={{ fontSize: 12 }}
+                  />
+                </Funnel>
+              </FunnelChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Charts row 1 */}
       <div className="grid gap-4 lg:grid-cols-2">

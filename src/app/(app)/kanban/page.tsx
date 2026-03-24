@@ -29,6 +29,8 @@ const VISIBLE_STAGES: ApplicationStage[] = [
   "final_round",
   "offer",
   "rejected",
+  "ghosted",
+  "withdrawn",
 ];
 
 function KanbanCard({

@@ -60,6 +60,7 @@ export function ApplicationForm({
       recruiter_email: defaultValues?.recruiter_email ?? "",
       resume_version: defaultValues?.resume_version ?? "",
       cover_letter_version: defaultValues?.cover_letter_version ?? "",
+      outcome: defaultValues?.outcome ?? "",
     },
   });
 
@@ -306,6 +307,15 @@ export function ApplicationForm({
             {...register("cover_letter_version")}
           />
         </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="outcome">Outcome / Result</Label>
+        <Input
+          id="outcome"
+          placeholder="e.g. Got offer, rejected after final round..."
+          {...register("outcome")}
+        />
       </div>
 
       <div className="space-y-1.5">

@@ -50,6 +50,7 @@ export async function PATCH(
     if (body.recruiter_email !== undefined) updateData.recruiterEmail = body.recruiter_email || null;
     if (body.resume_version !== undefined) updateData.resumeVersion = body.resume_version || null;
     if (body.cover_letter_version !== undefined) updateData.coverLetterVersion = body.cover_letter_version || null;
+    if (body.outcome !== undefined) updateData.outcome = body.outcome || null;
 
     const updated = await db.application.update({
       where: { id },

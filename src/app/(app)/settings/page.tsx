@@ -38,14 +38,25 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    if (session?.user) {
-      reset({
-        name: session.user.name ?? "",
-        jobGoal: "",
-        targetRole: "",
-        weeklyApplicationGoal: 5,
+    if (!session?.user) return;
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then((data) => {
+        reset({
+          name: data.name ?? session.user?.name ?? "",
+          jobGoal: data.jobGoal ?? "",
+          targetRole: data.targetRole ?? "",
+          weeklyApplicationGoal: data.weeklyApplicationGoal ?? 5,
+        });
+      })
+      .catch(() => {
+        reset({
+          name: session.user?.name ?? "",
+          jobGoal: "",
+          targetRole: "",
+          weeklyApplicationGoal: 5,
+        });
       });
-    }
   }, [session, reset]);
 
   async function onSubmit(data: ProfileForm) {

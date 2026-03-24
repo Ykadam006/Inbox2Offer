@@ -59,6 +59,7 @@ export async function POST(request: Request) {
         recruiterEmail: data.recruiter_email || null,
         resumeVersion: data.resume_version || null,
         coverLetterVersion: data.cover_letter_version || null,
+        outcome: data.outcome || null,
       },
     });
 

@@ -30,7 +30,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { format, subDays, parseISO, isAfter } from "date-fns";
+import { format, subDays, parseISO, isAfter, startOfWeek } from "date-fns";
 import { SOURCE_LABELS, STAGE_COLORS } from "@/types";
 
 interface DashboardClientProps {
@@ -135,6 +135,14 @@ export function DashboardClient({ initialApplications, displayName }: DashboardC
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
+  const thisWeekCount = useMemo(() => {
+    const weekStart = startOfWeek(new Date());
+    return initialApplications.filter((a) => {
+      if (!a.applied_date) return false;
+      return parseISO(a.applied_date) >= weekStart;
+    }).length;
+  }, [initialApplications]);
+
   const statCards = [
     {
       label: "Total Applications",
@@ -142,7 +150,7 @@ export function DashboardClient({ initialApplications, displayName }: DashboardC
       icon: Target,
       color: "text-blue-500",
       bg: "bg-blue-500/10",
-      change: "+2 this week",
+      change: thisWeekCount > 0 ? `+${thisWeekCount} this week` : null,
     },
     {
       label: "Interviews",
@@ -194,7 +202,7 @@ export function DashboardClient({ initialApplications, displayName }: DashboardC
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        {statCards.map(({ label, value, icon: Icon, color, bg }) => (
+        {statCards.map(({ label, value, icon: Icon, color, bg, change }) => (
           <Card key={label} className="hover:shadow-md transition-shadow">
             <CardContent className="p-4">
               <div className={`mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl ${bg}`}>
@@ -202,6 +210,11 @@ export function DashboardClient({ initialApplications, displayName }: DashboardC
               </div>
               <div className="text-2xl font-bold">{value}</div>
               <div className="text-xs text-muted-foreground mt-0.5">{label}</div>
+              {change && (
+                <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">
+                  {change}
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}

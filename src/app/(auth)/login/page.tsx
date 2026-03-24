@@ -16,7 +16,7 @@ import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -79,7 +79,7 @@ export default function LoginPage() {
             <Input
               id="password"
               type="password"
-              placeholder="••••••••"
+              placeholder="Min. 8 characters"
               autoComplete="current-password"
               {...register("password")}
             />

@@ -3,6 +3,30 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { z } from "zod";
 
+export async function GET() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      name: true,
+      email: true,
+      jobGoal: true,
+      targetRole: true,
+      weeklyApplicationGoal: true,
+    },
+  });
+
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(user);
+}
+
 const profileSchema = z.object({
   name: z.string().min(2).optional(),
   jobGoal: z.string().max(200).optional(),

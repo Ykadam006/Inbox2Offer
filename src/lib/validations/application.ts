@@ -35,6 +35,7 @@ export const applicationSchema = z.object({
   recruiter_email: z.string().email().optional().or(z.literal("")),
   resume_version: z.string().max(100).optional().or(z.literal("")),
   cover_letter_version: z.string().max(100).optional().or(z.literal("")),
+  outcome: z.string().max(500).optional().or(z.literal("")),
 });
 
 export type ApplicationFormData = z.infer<typeof applicationSchema>;
